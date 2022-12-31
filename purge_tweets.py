@@ -8,8 +8,6 @@ from sqlalchemy import create_engine
 import pandas as pd
 import tweepy
 
-import pdb
-
 
 def purge_tweets(
     auth_dict, number_days_kept, do_not_delete_list, dry_run=False, back_up=False
@@ -88,7 +86,6 @@ def purge_tweets(
 
     if back_up:
         df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in tweets_lst])
-        pdb.set_trace()
         try:
             df_tweets_subset = df_tweets[cols]
         except KeyError:
