@@ -3,11 +3,14 @@
 from datetime import datetime, timedelta
 import os
 
+from sqlalchemy import create_engine
+
+import pandas as pd
 import tweepy
 
 
 def purge_tweets(
-    auth_dict, number_days_kept, do_not_delete_list, dry_run=False
+    auth_dict, number_days_kept, do_not_delete_list, dry_run=False, back_up=False
 ) -> None:
     """Purge tweets from timeline up to cutoff date
 
@@ -23,8 +26,9 @@ def purge_tweets(
           from the last 10 days will be kept.
         - do_not_delete_list list: A list with tweet IDs. These tweets won't be
           eliminated.
-        - dry_run bool: If True it wont do any destructive calls, just print
+        - dry_run bool: If `True` it wont do any destructive calls, just print
           actions
+        - back_up bool: If `True` appends the timeline to a SQLite database
 
     Returns:
         None
@@ -45,7 +49,7 @@ def purge_tweets(
     cutoff_date = datetime.utcnow() - timedelta(days=number_days_kept)
 
     print("Retrieving timeline tweets")
-    timeline = tweepy.Cursor(api.user_timeline).items()
+    timeline = tweepy.Cursor(api.user_timeline, tweet_mode="extended").items()
 
     deletion_count: int = 0
     ignored_count: int = 0
@@ -64,6 +68,43 @@ def purge_tweets(
             ignored_count += 1
 
     print(f"Deleted {deletion_count} tweets, ignored {ignored_count}")
+
+    # Back up tweets in dict/json
+    cols = [
+        "created_at",
+        "id",
+        "id_str",
+        "full_text",
+        "in_reply_to_screen_name",
+        "is_quote_status",
+        "favorited",
+        "retweeted",
+    ]
+
+    if back_up:
+        df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in timeline])
+        try:
+            df_tweets_subset = df_tweets[cols]
+        except KeyError:
+            raise RuntimeError("Column subset not working!")
+
+        if not os.path.exists("./backups"):
+            os.makedirs("./backups")
+            con = create_engine("sqlite://backups/purged_tweet_db.sql")
+        else:
+            # Avoid repetition in DB -- ideally this could be solved on the SQL
+            # side, but no time.
+            con = create_engine("sqlite:///backups/purged_tweet_db.sql")
+            ids: pd.DataFrame = pd.read_sql("SELECT DISTINCT id FROM tweets", con=con)
+            df_tweets_subset: pd.DataFrame = df_tweets_subset[
+                ~df_tweets_subset["id"].isin(ids["id"].tolist())
+            ]
+
+        rows: int = df_tweets_subset.to_sql(
+            "tweets", con=con, index=False, if_exists="append"
+        )
+
+        print(f"Updated {rows} rows in the SQL database")
 
     return None
 
@@ -85,4 +126,5 @@ if __name__ == "__main__":
         auth_dict=creds_dict,
         do_not_delete_list=list_keep,
         dry_run=True,
+        back_up=True
     )
