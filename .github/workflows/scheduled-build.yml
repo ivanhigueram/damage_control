@@ -1,0 +1,39 @@
+name: Trigger twitter deleter using a CRON job 
+
+on:
+  schedule:
+    # Runs at the end of the year
+    - cron: '59 11 31 12 *'
+
+jobs:
+  build:
+    name: Twitter deleter
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo to the github worker 
+      - name: Checkout repo content
+        uses: actions/checkout@v3
+
+      # Build run environment
+      - name: Setup python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: pip # Cache previous environment if no change on requirements
+
+        - name: Install dependencies
+        - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+        - name: Execute script
+          env:
+            API_KEY: ${{secrets.API_KEY}}
+            API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
+            ACCESS_TOKEN: ${{secrets.ACCESS_TOKEN}}
+            ACCESS_TOKEN_SECRET: ${{secrets.ACCESS_TOKEN_SECRET}}
+
+        - run: python3 delete_tweets.py
+
+
+
