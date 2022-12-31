@@ -54,6 +54,7 @@ def purge_tweets(
     deletion_count: int = 0
     ignored_count: int = 0
 
+    tweets_lst = []
     for tweet in timeline:
         # where tweets are not in save list and older than cutoff date
         if (
@@ -64,6 +65,7 @@ def purge_tweets(
             if not dry_run:
                 api.destroy_status(tweet.id)
                 deletion_count += 1
+                tweets_lst.append(tweet)
         else:
             ignored_count += 1
 
@@ -82,7 +84,7 @@ def purge_tweets(
     ]
 
     if back_up:
-        df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in timeline])
+        df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in tweets_lst])
         try:
             df_tweets_subset = df_tweets[cols]
         except KeyError:
