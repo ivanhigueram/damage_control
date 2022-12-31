@@ -52,7 +52,10 @@ def purge_tweets(
 
     for tweet in timeline:
         # where tweets are not in save list and older than cutoff date
-        if tweet.id not in do_not_delete_list and tweet.created_at < cutoff_date:
+        if (
+            tweet.id not in do_not_delete_list
+            and tweet.created_at.replace(tzinfo=None) < cutoff_date
+        ):
             print(f"Deleting {tweet.id}: [{tweet.created_at}]")
             if not dry_run:
                 api.destroy_status(tweet.id)
