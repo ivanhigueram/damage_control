@@ -12,7 +12,7 @@ jobs:
     steps:
       # Checkout the repo to the github worker 
       - name: Checkout repo content
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       # Build run environment
       - name: Setup python environment
         uses: actions/setup-python@v4
