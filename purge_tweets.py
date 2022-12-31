@@ -8,6 +8,8 @@ from sqlalchemy import create_engine
 import pandas as pd
 import tweepy
 
+import pdb
+
 
 def purge_tweets(
     auth_dict, number_days_kept, do_not_delete_list, dry_run=False, back_up=False
@@ -62,10 +64,11 @@ def purge_tweets(
             and tweet.created_at.replace(tzinfo=None) < cutoff_date
         ):
             print(f"Deleting {tweet.id}: [{tweet.created_at}]")
+            tweets_lst.append(tweet)
+
             if not dry_run:
                 api.destroy_status(tweet.id)
                 deletion_count += 1
-                tweets_lst.append(tweet)
         else:
             ignored_count += 1
 
@@ -85,6 +88,7 @@ def purge_tweets(
 
     if back_up:
         df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in tweets_lst])
+        pdb.set_trace()
         try:
             df_tweets_subset = df_tweets[cols]
         except KeyError:
@@ -92,7 +96,7 @@ def purge_tweets(
 
         if not os.path.exists("./backups"):
             os.makedirs("./backups")
-            con = create_engine("sqlite://backups/purged_tweet_db.sql")
+            con = create_engine("sqlite:///backups/purged_tweet_db.sql")
         else:
             # Avoid repetition in DB -- ideally this could be solved on the SQL
             # side, but no time.
@@ -128,5 +132,5 @@ if __name__ == "__main__":
         auth_dict=creds_dict,
         do_not_delete_list=list_keep,
         dry_run=True,
-        back_up=True
+        back_up=True,
     )
