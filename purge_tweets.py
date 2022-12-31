@@ -7,7 +7,7 @@ import tweepy
 
 
 def purge_tweets(
-    auth_dict, number_days_kept, do_not_delete_list, delete_tweets=True, dry_run=False
+    auth_dict, number_days_kept, do_not_delete_list, dry_run=False
 ) -> None:
     """Purge tweets from timeline up to cutoff date
 
@@ -23,20 +23,18 @@ def purge_tweets(
           from the last 10 days will be kept.
         - do_not_delete_list list: A list with tweet IDs. These tweets won't be
           eliminated.
-        - delete_tweets bool: If True, delete all the tweets. Else will just
-          print some data.
-        - dry_run bool: just as `delete_tweets`. If True it wont do any
-          destructive calls, just print actions
+        - dry_run bool: If True it wont do any destructive calls, just print
+          actions
 
     Returns:
         None
     """
 
     # Load all credentials to start the API
-    consumer_key = auth_dict.get("API_KEY")
-    consumer_secret = auth_dict.get("API_KEY_SECRET")
-    access_token = auth_dict.get("ACCESS_TOKEN")
-    access_token_secret = auth_dict.get("ACCESS_TOKEN_SECRET")
+    consumer_key: str = auth_dict.get("API_KEY")
+    consumer_secret: str = auth_dict.get("API_KEY_SECRET")
+    access_token: str = auth_dict.get("ACCESS_TOKEN")
+    access_token_secret: str = auth_dict.get("ACCESS_TOKEN_SECRET")
 
     # Instantiate API
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -46,26 +44,23 @@ def purge_tweets(
     # Define cutoff date
     cutoff_date = datetime.utcnow() - timedelta(days=number_days_kept)
 
-    if delete_tweets:
-        print("Retrieving timeline tweets")
-        timeline = tweepy.Cursor(api.user_timeline).items()
+    print("Retrieving timeline tweets")
+    timeline = tweepy.Cursor(api.user_timeline).items()
 
-        deletion_count: int = 0
-        ignored_count: int = 0
+    deletion_count: int = 0
+    ignored_count: int = 0
 
-        for tweet in timeline:
-            # where tweets are not in save list and older than cutoff date
-            if tweet.id not in do_not_delete_list and tweet.created_at < cutoff_date:
-                print(f"Deleting {tweet.id}: [{tweet.created_at}]")
-                if not dry_run:
-                    api.destroy_status(tweet.id)
-                    deletion_count += 1
-            else:
-                ignored_count += 1
+    for tweet in timeline:
+        # where tweets are not in save list and older than cutoff date
+        if tweet.id not in do_not_delete_list and tweet.created_at < cutoff_date:
+            print(f"Deleting {tweet.id}: [{tweet.created_at}]")
+            if not dry_run:
+                api.destroy_status(tweet.id)
+                deletion_count += 1
+        else:
+            ignored_count += 1
 
-        print(f"Deleted {deletion_count} tweets, ignored {ignored_count}")
-    else:
-        print("Not deleting tweets")
+    print(f"Deleted {deletion_count} tweets, ignored {ignored_count}")
 
     return None
 
@@ -86,6 +81,5 @@ if __name__ == "__main__":
         number_days_kept=360,
         auth_dict=creds_dict,
         do_not_delete_list=list_keep,
-        delete_tweets=True,
-        dry_run=False,
+        dry_run=True,
     )
