@@ -79,6 +79,13 @@ if __name__ == "__main__":
         "ACCESS_TOKEN": os.environ.get("ACCESS_TOKEN"),
         "ACCESS_TOKEN_SECRET": os.environ.get("ACCESS_TOKEN_SECRET"),
     }
+
+    # Keep tweets
+    list_keep = ["1418600894644461569"]
     purge_tweets(
-        number_days=360, auth_dict=creds_dict, delete_tweets=True, dry_run=False
+        number_days_kept=360,
+        auth_dict=creds_dict,
+        do_not_delete_list=list_keep,
+        delete_tweets=True,
+        dry_run=False,
     )
