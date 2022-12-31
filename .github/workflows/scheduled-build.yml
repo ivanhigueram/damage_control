@@ -1,8 +1,10 @@
 name: Trigger twitter deleter using a CRON job 
 on:
-  schedule:
+  #schedule:
     # Runs at the end of the year
-    - cron: '59 11 31 12 *'
+    #- cron: '59 11 31 12 *'
+  push:
+    branches: [master, main]
 
 jobs:
   build:
