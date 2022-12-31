@@ -1,5 +1,4 @@
 tweepy
 pandas
-sqlite3
 sqlalchemy
 
