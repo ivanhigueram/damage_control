@@ -18,12 +18,17 @@ Twitter has become annoying with their API use. To successfully use this code
 you will need *Elevated* API access; the default app permissions are *Essential*
 only. The application to these permissions is straight-forward, but adds to the
 process. API permissions need two sets of keys (key + secret): `API_KEY` and
-`ACCESS_TOKEN`. These keys must be stored as environment variables. 
+`ACCESS_TOKEN`. These keys must be stored as environment variables.[^1]. 
 
 Once keys are stored, you can execute `purge_tweets`. This function takes
 several options to decide what to delete and other options you can check out on
 the function's doctring. The `plot.py` (ironically not a plot generator
 function) creates a JSON file to be rendered in this README file.  
+
+[^1]: If using this repo and the Github Actions, remember you can use secrets
+    rather than expose your credentials online. See more
+[here](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
+These keys by malicious actors, you do not want that :upside_down_face:.  
 
 ## Year summary
 [![markdown-autodocs](https://github.com/ivanhigueram/damage_control/actions/workflows/update_readme.yml/badge.svg)](https://github.com/ivanhigueram/damage_control/actions/workflows/update_readme.yml)
