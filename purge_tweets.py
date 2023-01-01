@@ -129,6 +129,6 @@ if __name__ == "__main__":
         number_days_kept=360,
         auth_dict=creds_dict,
         do_not_delete_list=list_keep,
-        dry_run=True,
+        dry_run=False,
         back_up=True,
     )
