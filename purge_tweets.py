@@ -93,7 +93,7 @@ def purge_tweets(
             raise RuntimeError("Column subset not working!")
 
         if not os.path.exists("./backups/purged_tweet_db.sql"):
-            os.makedirs('./backups', exists_ok=True)
+            os.makedirs('./backups', exist_ok=True)
             con = create_engine("sqlite:///backups/purged_tweet_db.sql")
         else:
             # Avoid repetition in DB -- ideally this could be solved on the SQL
