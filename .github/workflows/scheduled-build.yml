@@ -1,4 +1,4 @@
-name: Trigger twitter deleter using a CRON job 
+name: purge-tweets
 on:
   #schedule:
     # Runs at the end of the year
@@ -10,8 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      
+      - uses: actions/checkout@v3
       - name: Setup python environment
         uses: actions/setup-python@v4
         with:
