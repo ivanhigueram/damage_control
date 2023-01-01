@@ -3,7 +3,7 @@ name: markdown-autodocs
 on:
   workflow_run:
     workflows:
-      - purge_tweets
+      - purge-tweets
     types:
       - completed
 
