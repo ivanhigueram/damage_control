@@ -14,7 +14,7 @@ commit, but lazyness.
 
 ## Year summary
 <!-- MARKDOWN-AUTO-DOCS:START (JSON_TO_HTML_TABLE:src=./backups/year_groupby.json) --> 
-
+<!-- MARKDOWN-AUTO-DOCS:END -->
 
 ### To-do
  - [ ] Add Mastodon (:elephant:)
