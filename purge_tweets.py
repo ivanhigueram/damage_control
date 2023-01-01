@@ -88,6 +88,7 @@ def purge_tweets(
         df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in tweets_lst])
         try:
             df_tweets_subset = df_tweets[cols]
+            df_tweets_subset['created_at'] = pd.to_datetime(df_tweets_subset.created_at)
         except KeyError:
             raise RuntimeError("Column subset not working!")
 
@@ -96,7 +97,7 @@ def purge_tweets(
             con = create_engine("sqlite:///backups/purged_tweet_db.sql")
         else:
             # Avoid repetition in DB -- ideally this could be solved on the SQL
-            # side, but no time.
+            # side, but too lazy.
             con = create_engine("sqlite:///backups/purged_tweet_db.sql")
             ids: pd.DataFrame = pd.read_sql("SELECT DISTINCT id FROM tweets", con=con)
             df_tweets_subset: pd.DataFrame = df_tweets_subset[

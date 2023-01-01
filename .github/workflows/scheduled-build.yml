@@ -5,6 +5,8 @@ on:
     #- cron: '59 11 31 12 *'
   push:
     branches: [master, main]
+  paths-ignore:
+    - '**/README.md'
 
 jobs:
   build:
@@ -29,10 +31,12 @@ jobs:
           API_KEY_SECRET: ${{secrets.API_KEY_SECRET}}
           ACCESS_TOKEN: ${{secrets.ACCESS_TOKEN}}
           ACCESS_TOKEN_SECRET: ${{secrets.ACCESS_TOKEN_SECRET}}
-        run: python3 purge_tweets.py
+        run: |
+          python3 purge_tweets.py
+          python3 plot.py
 
       - name: Push changes
         uses: EndBug/add-and-commit@v9
         with:
-          add: '*.sql'
+          add: './backups/*'
           default_author: 'github_actions'
