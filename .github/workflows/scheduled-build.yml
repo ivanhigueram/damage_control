@@ -1,10 +1,8 @@
 name: purge-tweets
 on:
-  #schedule:
+  schedule:
     # Runs at the end of the year
-    #- cron: '59 11 31 12 *'
-  push:
-    branches: [master, main]
+    - cron: '00 12 01 01 *'
 
 jobs:
   build:

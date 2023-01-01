@@ -88,12 +88,12 @@ def purge_tweets(
         df_tweets: pd.DataFrame = pd.DataFrame([t._json for t in tweets_lst])
         try:
             df_tweets_subset = df_tweets[cols]
-            df_tweets_subset['created_at'] = pd.to_datetime(df_tweets_subset.created_at)
+            df_tweets_subset["created_at"] = pd.to_datetime(df_tweets_subset.created_at)
         except KeyError:
             raise RuntimeError("Column subset not working!")
 
         if not os.path.exists("./backups/purged_tweet_db.sql"):
-            os.makedirs('./backups', exist_ok=True)
+            os.makedirs("./backups", exist_ok=True)
             con = create_engine("sqlite:///backups/purged_tweet_db.sql")
         else:
             # Avoid repetition in DB -- ideally this could be solved on the SQL
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     }
 
     # Keep tweets
-    list_keep = ["1418600894644461569"]
+    list_keep = ["1418600894644461569", "188275142869266432", "1482951811338096640"]
     purge_tweets(
         number_days_kept=360,
         auth_dict=creds_dict,
