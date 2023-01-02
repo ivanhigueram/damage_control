@@ -124,7 +124,7 @@ if __name__ == "__main__":
     }
 
     # Keep tweets
-    list_keep = ["1418600894644461569", "188275142869266432", "1482951811338096640"]
+    list_keep = [1418600894644461569, 188275142869266432, 1482951811338096640]
     purge_tweets(
         number_days_kept=360,
         auth_dict=creds_dict,
